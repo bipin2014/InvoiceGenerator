@@ -36,9 +36,6 @@ h1 {
   text-align: center;
   color: #fff;
 }
-.notvisual {
-  opacity: 0 !important;
-}
 
 #add-container .controls {
   width: 70%;
@@ -67,9 +64,7 @@ button {
   cursor: pointer;
   color: white;
 }
-#add-container .controls button:focus {
-  outline: 0;
-}
+
 button:hover {
   transform: scale(1.05);
 }
@@ -86,7 +81,7 @@ button {
 }
 
 .visual-error {
-  opacity: 1 !important;
+  opacity: 1;
   background-color: #c0392b;
   padding: 10px;
   color: #fff;
