@@ -102,7 +102,8 @@ const buildEditMessage = ({ message, className = "visual-error" }) => {
   messageDiv.className = className;
 
   setTimeout(() => {
-    messageDiv.textContent = "";
+    // messageDiv.textContent = "";
+    messageDiv.removeChild(ptext);
     messageDiv.className = "";
   }, 1000);
 };
