@@ -1,6 +1,7 @@
 const table = document.querySelector("#invoices");
 
-var list = [{ id: 1, name: "test", price: 10, quantity: 10 }];
+// var list = [{ id: 1, name: "test", price: 10, quantity: 10 }];
+var list = [];
 let ascending = true;
 var invoiceMessage = document.querySelector("#invoiceMessage");
 
