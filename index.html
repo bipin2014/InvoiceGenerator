@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>My Invoice Generator</h1>
+    <div class="main">
+      <div class="add-container" id="add-container">
+        <h2>Add Item</h2>
+        <div class="controls">
+          <form id="addform">
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter a name of item"
+              id="name"
+            />
+            <input
+              type="text"
+              name="price"
+              placeholder="Enter a price"
+              id="price"
+            />
+            <input
+              type="text"
+              name="quantity"
+              placeholder="Enter a quantity"
+              id="quantity"
+            />
+            <button type="submit" id="add">Add Item</button>
+          </form>
+        </div>
+      </div>
+      <div class="invoice-container" id="invoice-container">
+        <div class="invoice-heading">
+          <!-- <div></div> -->
+          <h2 id="invoiceMessage">Invoice Items</h2>
+          <div class="sort-buttons">
+            <button id="sort-price">Sort by Price</button>
+            <button id="sort-quantity">Sort by Quantity</button>
+          </div>
+        </div>
+        <table id="invoices"></table>
+        <div id="total-info">
+          <div class="showTotal">Total: 100000</div>
+          <div class="showVat">VAT: 1000</div>
+          <div class="showTotalWithVat">Total With VAT: 101000</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog close">
+      <div class="backdrop" onclick="toggleDialog()"></div>
+      <div class="dialog-box">
+        <div id="edit-  message"></div>
+        <h2>Edit Items</h2>
+        <div class="dialog-container">
+          <form id="editForm">
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter a name of item"
+              id="editname"
+            />
+            <input
+              type="text"
+              name="price"
+              placeholder="Enter a price"
+              id="editprice"
+            />
+            <input
+              type="text"
+              name="quantity"
+              placeholder="Enter a quantity"
+              id="editquantity"
+            />
+            <input type="hidden" name="id" id="editid" />
+            <button type="submit" id="edit">Edit Item</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="delete-dialog close">
+      <div class="backdrop" onclick="toggleDeleteDialog()"></div>
+      <div class="dialog-box">
+        <h2>Are you sure want to delete?</h2>
+        <div class="dialog-container">
+          <button type="submit" class="delete" id="delete">Delete</button>
+          <button type="submit" id="edit" onclick="toggleDeleteDialog()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
