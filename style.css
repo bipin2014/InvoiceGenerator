@@ -4,7 +4,7 @@ body {
   padding: 0;
   font-family: "Titillium Web", sans-serif;
 }
-h3{
+h3 {
   margin: 0;
   text-align: center;
   color: #eee;
@@ -138,7 +138,7 @@ nav {
   font-weight: bold;
   cursor: pointer;
   padding: 10px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 .expand-container:after {
   content: "\002B";
@@ -150,6 +150,9 @@ nav {
 
 .details-container .active:after {
   content: "\2212";
+}
+.details div {
+  font-size: 1.1em;
 }
 
 #add-container,
@@ -166,7 +169,7 @@ nav {
   padding: 20px;
   margin: 10px;
   text-align: start;
-  border: none;
+  transition: height 0.5s ease-in;
 }
 h1 {
   margin-top: 50px;
@@ -191,6 +194,8 @@ input[type="text"] {
   border: 2px solid #b5c5dd;
   border-radius: 10px;
 }
+
+
 input:focus,
 input:active {
   outline: none;
@@ -201,6 +206,10 @@ input:active {
   border: 1px solid rgba(0, 0, 0, 0.3);
   display: flex;
   padding: 10px 15px;
+}
+
+.error {
+  border: 2px solid red;
 }
 button {
   width: 100%;
@@ -295,7 +304,7 @@ button {
   font-size: 1.2rem;
 }
 #total-info div {
-  margin: 10px;
+  margin: 5px;
 }
 #total-info button {
   width: 200px;
@@ -327,7 +336,7 @@ button {
   flex-direction: column;
   padding: 10px;
   height: 250px;
-  width: 60%;
+  width: 40%;
   margin-top: 20vh;
   transition: 0.3s;
   animation: slidein 0.3s;

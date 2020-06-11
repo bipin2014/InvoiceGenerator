@@ -65,13 +65,13 @@
           <div class="form-group d-flex">
             <div class="input-form align-item-center">
               <label>Name of Person</label>
-              <input type="text" name="name" onchange="inputHandler(event)" />
+              <input type="text" name="name" id="personName" onchange="inputHandler(event)" />
             </div>
           </div>
           <div class="form-group d-flex">
             <div class="input-form align-item-center">
               <label class="width-auto">Contact Number</label>
-              <input type="text" name="phone" onchange="inputHandler(event)" />
+              <input type="text" name="phone" id="personContact" onchange="inputHandler(event)" />
             </div>
           </div>
         </div>
@@ -98,15 +98,16 @@
             </div> -->
           </div>
         </div>
-        <div id="total-info" class="justify-end">
+        <div id="total-info" class="d-flex flex-direction-column justify-end">
           <div class="showTotal">Total: 100000</div>
           <div class="showDiscount">Discount: 400</div>
           <div class="showVat">VAT: 1000</div>
           <div class="showTotalWithVat">Total With VAT: 101000</div>
-          <div class="buttons d-flex flex-direction-column justify-end">
+          <div class="buttons d-flex justify-end">
+            <button type="button" onclick="window.print()">Print Bill</button>
             <button onclick="clearAll()" class="delete">Clear All</button>
             <button onclick="saveToHistory()">Save to history</button>
-            <button type="button" onclick="window.print()">Print Bill</button>
+            
           </div>
         </div>
       </div>
@@ -189,7 +190,7 @@
       <div class="backdrop" onclick="toggleDeleteDialog()"></div>
       <div class="dialog-box">
         <h2>Are you sure want to delete?</h2>
-        <div class="dialog-container">
+        <div class="dialog-container d-flex">
           <button type="submit" class="delete" id="delete">Delete</button>
           <button type="submit" id="edit" onclick="toggleDeleteDialog()">
             Cancel

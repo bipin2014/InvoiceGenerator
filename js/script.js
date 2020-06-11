@@ -7,16 +7,6 @@ let ascending = true;
 let invoiceMessage = document.querySelector("#invoiceMessage");
 let historyHeading = document.querySelector("#history-heading");
 
-let historyObj = {
-  id: "",
-  items: [],
-  name: "",
-  phone: "",
-  discount: 0,
-  total: 0,
-  date: new Date(),
-};
-
 invoiceMessage.textContent =
   "No Item added Yet. Add it to see a list of item here";
 
@@ -249,6 +239,7 @@ const buildHistoryCard = () => {
   console.log("Final", historyArray);
 
   if (historyArray.length > 0) {
+    historyHeading.textContent = "Invoice History";
     historyArray.forEach((l) => {
       let tableOutput = "";
       l.items.forEach((item) => {
@@ -257,7 +248,9 @@ const buildHistoryCard = () => {
         <div class="col flex-3 text-center">${item.name}</div>
         <div class="col flex-1 text-center">${item.quantity}</div>
         <div class="col flex-1 text-center">${item.price}</div>
-        <div class="col flex-2 text-center">${item.quantity * item.price}</div>
+        <div class="col flex-2 text-center">${
+          parseFloat(item.quantity) * parseFloat(item.price)
+        }</div>
       </div>`;
       });
       let vat = (l.total * 0.13).toFixed(2);
@@ -266,7 +259,7 @@ const buildHistoryCard = () => {
       historyDetails.innerHTML += `<div class="history-list">
       <div
         class="details-container d-flex flex-direction-row justify-space-between"
-      >
+        onclick="expandCard(event)">
         <div class="details">
           <div class="name">Name: ${l.name}</div>
           <div class="name">Contact Info :${l.phone}</div>
@@ -276,8 +269,7 @@ const buildHistoryCard = () => {
           <div class="name">Grand Total: Rs.${gtotal}</div>
           <div class="name">Date: ${l.date.toLocaleTimeString()} </div>
         </div>
-        <div class="expand-container" onclick="expandCard(event)">
-          
+        <div class="expand-container" >
         </div>
       </div>
       <div class="expanded-details hide">
@@ -306,10 +298,9 @@ const buildHistoryCard = () => {
 };
 
 const expandCard = (event) => {
-  event.target.classList.toggle("active");
-  event.target.parentElement.nextSibling.nextElementSibling.classList.toggle(
-    "hide"
-  );
+  event.target.children[1].classList.toggle("active");
+
+  event.target.nextElementSibling.classList.toggle("hide");
 };
 
 const createHistoryItemTable = () => {
@@ -323,7 +314,7 @@ const calculateTotal = () => {
   let discountDiv = document.querySelector(".showDiscount");
   let vatDiv = document.querySelector(".showVat");
   let totalWithVat = document.querySelector(".showTotalWithVat");
-
+  total = 0;
   list.forEach((l) => {
     total = total + l.price * l.quantity;
   });
@@ -380,38 +371,57 @@ const clearAll = () => {
 };
 
 const inputHandler = (e) => {
-  historyObj[e.target.name] = e.target.value;
-  console.log(historyObj);
+  e.target.classList.remove("error");
+  // historyObj[e.target.name] = e.target.value;
+  // console.log(historyObj);
 };
 
 const saveToHistory = () => {
-  let id;
-  if (historyArray.length > 0) {
-    id = historyArray[historyArray.length - 1].id + 1;
+  const nameInput = document.querySelector("#personName");
+  const phoneInput = document.querySelector("#personContact");
+  if (nameInput.value == "") {
+    nameInput.classList.add("error");
+    console.log("name");
+    
+  } else if (isNaN(phoneInput.value) || !phoneInput.value.length == 10) {
+    phoneInput.classList.add("error");
+    console.log("phone");
   } else {
-    id = 1;
+    console.log("history");
+    
+    let id;
+    if (historyArray.length > 0) {
+      id = historyArray[historyArray.length - 1].id + 1;
+    } else {
+      id = 1;
+    }
+
+    const obj = {
+      id: id,
+      items: list,
+      name: nameInput.value,
+      phone: phoneInput.value,
+      discount: 0,
+      total: total,
+      date: new Date(),
+    };
+
+    historyArray.push(obj);
+    console.log(historyArray);
+
+    nameInput.value = "";
+    phoneInput.value = "";  
+
+    //clear list
+    list = [];
+
+    buildTable();
+
+    buildHistoryCard();
+
+    //showhistory
+    showHistory();
   }
-
-  const obj = {
-    ...historyObj,
-    id: id,
-    items: list,
-    discount: 0,
-    total: total,
-  };
-
-  historyArray.push(obj);
-  console.log(historyArray);
-
-  //clear list
-  list = [];
-
-  buildTable();
-
-  buildHistoryCard();
-
-  //showhistory
-  showHistory();
 };
 
 const showHistory = () => {
