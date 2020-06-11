@@ -5,10 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice Generator</title>
     <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h1>My Invoice Generator</h1>
-    <div class="main">
+    <nav class="d-flex justify-space-between align-item-center">
+      <div class="title flex-5" onclick="showHome()">My Invoice Generator</div>
+      <div class="nav-items d-flex justify-space-around flex-1">
+        <div class="nav-item border-radius active" onclick="showHome()">
+          Home
+        </div>
+        <div class="nav-item border-radius" onclick="showHistory()">
+          History
+        </div>
+        <!-- <div class="nav-item border-radius">
+          Home
+        </div> -->
+      </div>
+    </nav>
+    <div class="main home">
       <div class="add-container" id="add-container">
         <h2>Add Item</h2>
         <div class="controls">
@@ -44,12 +61,95 @@
             <button id="sort-quantity">Sort by Quantity</button>
           </div>
         </div>
-        <table id="invoices"></table>
-        <div id="total-info">
+        <div class="form-area d-flex justify-space-between">
+          <div class="form-group d-flex">
+            <div class="input-form align-item-center">
+              <label>Name of Person</label>
+              <input type="text" name="name" onchange="inputHandler(event)" />
+            </div>
+          </div>
+          <div class="form-group d-flex">
+            <div class="input-form align-item-center">
+              <label class="width-auto">Contact Number</label>
+              <input type="text" name="phone" onchange="inputHandler(event)" />
+            </div>
+          </div>
+        </div>
+        <div class="table-area">
+          <div class="table flex-1">
+            <div class="table-headers row d-flex">
+              <div class="col flex-1 text-right">Id</div>
+              <div class="col flex-3 text-center">Name</div>
+              <div class="col flex-1 text-center">Quantity</div>
+              <div class="col flex-1 text-center">Price</div>
+              <div class="col flex-2 text-center">Total</div>
+              <div class="col flex-3 text-center">Actions</div>
+            </div>
+            <!-- <div class="table-body row d-flex">
+              <div class="col flex-1 text-right">1</div>
+              <div class="col flex-3 text-center">Random</div>
+              <div class="col flex-1 text-center">3</div>
+              <div class="col flex-1 text-center">4</div>
+              <div class="col flex-2 text-center">12</div>
+              <div class="col flex-3 text-center">
+                <button onclick="editItem(l.id)">Edit</button>
+                <button class="delete">Delete</button>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <div id="total-info" class="justify-end">
           <div class="showTotal">Total: 100000</div>
+          <div class="showDiscount">Discount: 400</div>
           <div class="showVat">VAT: 1000</div>
           <div class="showTotalWithVat">Total With VAT: 101000</div>
+          <div class="buttons d-flex flex-direction-column justify-end">
+            <button onclick="clearAll()" class="delete">Clear All</button>
+            <button onclick="saveToHistory()">Save to history</button>
+            <button type="button" onclick="window.print()">Print Bill</button>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <div class="main history d-flex flex-direction-column hide">
+      <h3 id="history-heading">Invoice History</h3>
+      <!-- <h2>Invoice History</h2> -->
+      <div class="history-lists">
+        <!-- <div class="history-list">
+          <div
+            class="details-container d-flex flex-direction-row justify-space-between"
+          >
+            <div class="details">
+              <div class="name">Ram Prasad</div>
+              <div class="name">Amount:</div>
+              <div class="name">Date:</div>
+            </div>
+            <div class="expand-container">
+              Expand
+            </div>
+          </div>
+          <div class="expanded-details">
+            <div class="table-area">
+              <div class="table flex-1">
+                <div class="table-headers row d-flex">
+                  <div class="col flex-1 text-right">Id</div>
+                  <div class="col flex-3 text-center">Name</div>
+                  <div class="col flex-1 text-center">Quantity</div>
+                  <div class="col flex-1 text-center">Price</div>
+                  <div class="col flex-2 text-center">Total</div>
+                </div>
+                <div class="history-table-body row d-flex">
+                  <div class="col flex-1 text-right">1</div>
+                  <div class="col flex-3 text-center">Random</div>
+                  <div class="col flex-1 text-center">3</div>
+                  <div class="col flex-1 text-center">4</div>
+                  <div class="col flex-2 text-center">12</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
       </div>
     </div>
 
@@ -91,7 +191,9 @@
         <h2>Are you sure want to delete?</h2>
         <div class="dialog-container">
           <button type="submit" class="delete" id="delete">Delete</button>
-          <button type="submit" id="edit" onclick="toggleDeleteDialog()">Cancel</button>
+          <button type="submit" id="edit" onclick="toggleDeleteDialog()">
+            Cancel
+          </button>
         </div>
       </div>
     </div>

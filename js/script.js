@@ -1,18 +1,31 @@
-const table = document.querySelector("#invoices");
+const table = document.querySelector(".table");
 
-// var list = [{ id: 1, name: "test", price: 10, quantity: 10 }];
-var list = [];
+// let list = [{ id: 1, name: "test", price: 10, quantity: 10 }];
+let list = [];
+let historyArray = [];
 let ascending = true;
-var invoiceMessage = document.querySelector("#invoiceMessage");
+let invoiceMessage = document.querySelector("#invoiceMessage");
+let historyHeading = document.querySelector("#history-heading");
+
+let historyObj = {
+  id: "",
+  items: [],
+  name: "",
+  phone: "",
+  discount: 0,
+  total: 0,
+  date: new Date(),
+};
 
 invoiceMessage.textContent =
   "No Item added Yet. Add it to see a list of item here";
 
-var totalInfo = document.querySelector("#total-info");
-var sortButtons = document.querySelector(".sort-buttons");
+let totalInfo = document.querySelector("#total-info");
+let sortButtons = document.querySelector(".sort-buttons");
+let formArea = document.querySelector(".form-area");
 let index;
 let deleteId;
-
+formArea.classList.add("hide");
 totalInfo.classList.add("hide");
 sortButtons.classList.add("hide");
 
@@ -49,7 +62,7 @@ form.addEventListener("submit", (event) => {
 
     invoiceMessage.textContent = "Invoice Items";
 
-    var obj = {
+    let obj = {
       id: id,
       name: event.target.name.value,
       price: event.target.price.value,
@@ -60,6 +73,8 @@ form.addEventListener("submit", (event) => {
     console.log(list);
     totalInfo.classList.remove("hide");
     sortButtons.classList.remove("hide");
+    table.classList.remove("hide");
+    formArea.classList.remove("hide");
 
     //   const tr = document.querySelectorAll("tr");
 
@@ -78,11 +93,11 @@ form.addEventListener("submit", (event) => {
 
 //Show Message
 const buildMessage = ({ message, className = "visual-error" }) => {
-  var p = document.createElement("p");
-  var ptext = document.createTextNode(message);
+  let p = document.createElement("p");
+  let ptext = document.createTextNode(message);
   p.appendChild(ptext);
 
-  var divcontrol = document.querySelector(".controls");
+  let divcontrol = document.querySelector(".controls");
   // console.log(divcontrol);
 
   divcontrol.appendChild(p);
@@ -95,8 +110,8 @@ const buildMessage = ({ message, className = "visual-error" }) => {
 
 // show Edit Message
 const buildEditMessage = ({ message, className = "visual-error" }) => {
-  var messageDiv = document.querySelector("#edit-message");
-  var ptext = document.createTextNode(message);
+  let messageDiv = document.querySelector("#edit-message");
+  let ptext = document.createTextNode(message);
   messageDiv.appendChild(ptext);
 
   messageDiv.className = className;
@@ -199,80 +214,127 @@ const editItemFromForm = (id, name, price, quantity) => {
 //delete previous and build new table
 const buildTable = () => {
   //remove previous data and add table headers
-  table.innerHTML = "";
+  document.querySelectorAll(".table-body ").forEach((all) => all.remove());
   if (list.length > 0) {
-    table.innerHTML =
-      "<thead><th>Id</th><th>Name</th><th>Price</th><th>Quantity</th><th>Total</th><th>Actions</th></thead>";
-
     list.forEach((l) => {
-      makeRow(l);
+      // makeRow(l);
+      table.innerHTML += `<div class="table-body row d-flex">
+      <div class="col flex-1 text-right">${l.id}</div>
+      <div class="col flex-3 text-center">${l.name}</div>
+      <div class="col flex-1 text-center">${l.quantity}</div>
+      <div class="col flex-1 text-center">${l.price}</div>
+      <div class="col flex-2 text-center">${l.price * l.quantity}</div>
+      <div class="col flex-3 text-center">
+        <button onclick="editItem(${l.id})">Edit</button>
+        <button class="delete" onclick="deleteItem(${l.id})">Delete</button>
+      </div>
+    </div>`;
     });
 
     calculateTotal();
   } else {
+    table.classList.add("hide");
     invoiceMessage.textContent = "No Item added. Add it to see a list here";
     totalInfo.classList.add("hide");
     sortButtons.classList.add("hide");
+    formArea.classList.add("hide");
+  }
+};
+//delete previous and build new table
+const buildHistoryCard = () => {
+  //remove previous data and add table headers
+  document.querySelectorAll(".history-list").forEach((all) => all.remove());
+  let historyDetails = document.querySelector(".history-lists");
+
+  console.log("Final", historyArray);
+
+  if (historyArray.length > 0) {
+    historyArray.forEach((l) => {
+      let tableOutput = "";
+      l.items.forEach((item) => {
+        tableOutput += `<div class="history-table-body row d-flex">
+        <div class="col flex-1 text-right">${item.id}</div>
+        <div class="col flex-3 text-center">${item.name}</div>
+        <div class="col flex-1 text-center">${item.quantity}</div>
+        <div class="col flex-1 text-center">${item.price}</div>
+        <div class="col flex-2 text-center">${item.quantity * item.price}</div>
+      </div>`;
+      });
+      let vat = (l.total * 0.13).toFixed(2);
+      let gtotal = l.total + vat;
+      // makeRow(l);
+      historyDetails.innerHTML += `<div class="history-list">
+      <div
+        class="details-container d-flex flex-direction-row justify-space-between"
+      >
+        <div class="details">
+          <div class="name">Name: ${l.name}</div>
+          <div class="name">Contact Info :${l.phone}</div>
+          <div class="name">Total: Rs.${l.total}</div>
+          <div class="name">Discount: Rs.(${l.discount})</div>
+          <div class="name">VAT(13%): Rs.${vat}</div>
+          <div class="name">Grand Total: Rs.${gtotal}</div>
+          <div class="name">Date: ${l.date.toLocaleTimeString()} </div>
+        </div>
+        <div class="expand-container" onclick="expandCard(event)">
+          
+        </div>
+      </div>
+      <div class="expanded-details hide">
+        <div class="table-area">
+          <div class="table flex-1">
+            <div class="table-headers row d-flex">
+              <div class="col flex-1 text-right">Id</div>
+              <div class="col flex-3 text-center">Name</div>
+              <div class="col flex-1 text-center">Quantity</div>
+              <div class="col flex-1 text-center">Price</div>
+              <div class="col flex-2 text-center">Total</div>
+            </div>
+           ${tableOutput}
+         </div>
+        </div>
+      </div>
+    </div>`;
+    });
+
+    // createHistoryItemTable();
+
+    calculateTotal();
+  } else {
+    historyHeading.textContent = "No Item added in history";
   }
 };
 
-const makeRow = (l) => {
-  var tablerow = document.createElement("tr");
-
-  var rowId = document.createElement("td");
-  rowId.textContent = l.id;
-  var nameData = document.createElement("td");
-  nameData.textContent = l.name;
-  var priceData = document.createElement("td");
-  priceData.textContent = l.price;
-  var quantityData = document.createElement("td");
-  quantityData.textContent = l.quantity;
-  var totalAmt = document.createElement("td");
-  totalAmt.textContent = l.price * l.quantity;
-
-  var actions = document.createElement("td");
-
-  //buttons
-  var editButton = document.createElement("button");
-  editButton.textContent = "Edit";
-  editButton.addEventListener("click", (event) => {
-    editItem(l.id);
-  });
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
-  deleteButton.id = "remove";
-  deleteButton.addEventListener("click", (event) => {
-    deleteItem(l.id);
-  });
-
-  actions.appendChild(editButton);
-  actions.appendChild(deleteButton);
-
-  tablerow.appendChild(rowId);
-  tablerow.appendChild(nameData);
-  tablerow.appendChild(priceData);
-  tablerow.appendChild(quantityData);
-  tablerow.appendChild(totalAmt);
-  tablerow.appendChild(actions);
-  table.appendChild(tablerow);
+const expandCard = (event) => {
+  event.target.classList.toggle("active");
+  event.target.parentElement.nextSibling.nextElementSibling.classList.toggle(
+    "hide"
+  );
 };
 
+const createHistoryItemTable = () => {
+  let historyDetails = document.querySelector(".history-lists");
+};
+
+let total = 0;
 //calculate total and vat
 const calculateTotal = () => {
-  var totalWithoutVat = document.querySelector(".showTotal");
-  var vatDiv = document.querySelector(".showVat");
-  var totalWithVat = document.querySelector(".showTotalWithVat");
-  var total = 0;
+  let totalWithoutVat = document.querySelector(".showTotal");
+  let discountDiv = document.querySelector(".showDiscount");
+  let vatDiv = document.querySelector(".showVat");
+  let totalWithVat = document.querySelector(".showTotalWithVat");
+
   list.forEach((l) => {
     total = total + l.price * l.quantity;
   });
   console.log(total);
   console.log(totalWithoutVat);
-  var vat = (total * 0.13).toFixed(2);
+  let vat = (total * 0.13).toFixed(2);
 
   totalWithoutVat.textContent = `Total Without VAT: Rs.${total}`;
   vatDiv.textContent = `Total VAT: Rs.${vat}`;
-  var totalAmtWithVat = (parseFloat(total) + parseFloat(vat)).toFixed(2);
+  discountDiv.textContent = `Discount: Rs.0`;
+  let totalAmtWithVat = (parseFloat(total) + parseFloat(vat)).toFixed(2);
   totalWithVat.textContent = `Total with VAT: Rs.${totalAmtWithVat}`;
 };
 
@@ -284,10 +346,10 @@ const deleteItem = (id) => {
 
 const editItem = (id) => {
   toggleDialog();
-  var editname = document.querySelector("#editname");
-  var editprice = document.querySelector("#editprice");
-  var editquantity = document.querySelector("#editquantity");
-  var hiddenId = document.querySelector("#editid");
+  let editname = document.querySelector("#editname");
+  let editprice = document.querySelector("#editprice");
+  let editquantity = document.querySelector("#editquantity");
+  let hiddenId = document.querySelector("#editid");
   index = list.findIndex((l) => l.id == id);
   editname.value = list[index].name;
   editprice.value = list[index].price;
@@ -304,7 +366,7 @@ const toggleDeleteDialog = () => {
   document.querySelector(".delete-dialog").classList.toggle("close");
 };
 
-var deleteButton = document.querySelector("#delete");
+let deleteButton = document.querySelector("#delete");
 deleteButton.addEventListener("click", (event) => {
   list = list.filter((l) => l.id != deleteId);
   console.log(list);
@@ -312,4 +374,66 @@ deleteButton.addEventListener("click", (event) => {
   buildTable();
 });
 
+const clearAll = () => {
+  list = [];
+  buildTable();
+};
+
+const inputHandler = (e) => {
+  historyObj[e.target.name] = e.target.value;
+  console.log(historyObj);
+};
+
+const saveToHistory = () => {
+  let id;
+  if (historyArray.length > 0) {
+    id = historyArray[historyArray.length - 1].id + 1;
+  } else {
+    id = 1;
+  }
+
+  const obj = {
+    ...historyObj,
+    id: id,
+    items: list,
+    discount: 0,
+    total: total,
+  };
+
+  historyArray.push(obj);
+  console.log(historyArray);
+
+  //clear list
+  list = [];
+
+  buildTable();
+
+  buildHistoryCard();
+
+  //showhistory
+  showHistory();
+};
+
+const showHistory = () => {
+  const historyTab = document.querySelector(".history");
+  historyTab.classList.remove("hide");
+  document.querySelector(".home").classList.add("hide");
+
+  const navItems = document.querySelectorAll(".nav-item");
+  navItems[0].classList.remove("active");
+  navItems[1].classList.add("active");
+};
+
+const showHome = () => {
+  const historyTab = document.querySelector(".home");
+  historyTab.classList.remove("hide");
+  document.querySelector(".history").classList.add("hide");
+
+  const navItems = document.querySelectorAll(".nav-item");
+  navItems[1].classList.remove("active");
+  navItems[0].classList.add("active");
+};
+
 buildTable();
+
+buildHistoryCard();
