@@ -269,7 +269,7 @@ const buildHistoryCard = () => {
           <div class="name">Grand Total: Rs.${gtotal}</div>
           <div class="name">Date: ${l.date.toLocaleTimeString()} </div>
         </div>
-        <div class="expand-container" >
+        <div class="expand-container">
         </div>
       </div>
       <div class="expanded-details hide">
@@ -289,8 +289,6 @@ const buildHistoryCard = () => {
     </div>`;
     });
 
-    // createHistoryItemTable();
-
     calculateTotal();
   } else {
     historyHeading.textContent = "No Item added in history";
@@ -298,13 +296,25 @@ const buildHistoryCard = () => {
 };
 
 const expandCard = (event) => {
-  event.target.children[1].classList.toggle("active");
+  event.stopPropagation();
+  const plus = document.querySelector(".expand-container");
+  const detailsContainer = document.querySelector(".details-container");
+  if (event.target == plus) {
+    console.log();
+    event.target.parentElement.nextElementSibling.classList.toggle("hide");
+    event.target.classList.toggle("active");
 
-  event.target.nextElementSibling.classList.toggle("hide");
-};
+    // event.target.nextElementSibling.classList.toggle("hide");
+  } else if (event.target == detailsContainer) {
+    event.target.children[1].classList.toggle("active");
 
-const createHistoryItemTable = () => {
-  let historyDetails = document.querySelector(".history-lists");
+    event.target.nextElementSibling.classList.toggle("hide");
+  } else {
+    event.target.parentElement.nextElementSibling.classList.toggle("active");
+    event.target.parentElement.parentElement.nextElementSibling.classList.toggle(
+      "hide"
+    );
+  }
 };
 
 let total = 0;
@@ -372,6 +382,8 @@ const clearAll = () => {
 
 const inputHandler = (e) => {
   e.target.classList.remove("error");
+  e.target.nextElementSibling.classList.remove("showerror");
+  e.target.nextElementSibling.classList.add("hideerror");
   // historyObj[e.target.name] = e.target.value;
   // console.log(historyObj);
 };
@@ -381,14 +393,27 @@ const saveToHistory = () => {
   const phoneInput = document.querySelector("#personContact");
   if (nameInput.value == "") {
     nameInput.classList.add("error");
+    nameInput.nextElementSibling.classList.remove("hideerror");
+    nameInput.nextElementSibling.classList.add("showerror");
+    nameInput.nextElementSibling.textContent = "Name cannot be empty";
+    nameInput.focus();
     console.log("name");
+  } else if (
+    phoneInput.value == "" ||
+    isNaN(phoneInput.value) ||
+    phoneInput.value.length !== 10
+  ) {
+    console.log(phoneInput.value.length);
     
-  } else if (isNaN(phoneInput.value) || !phoneInput.value.length == 10) {
     phoneInput.classList.add("error");
+    phoneInput.nextElementSibling.classList.remove("hideerror");
+    phoneInput.nextElementSibling.classList.add("showerror");
+    phoneInput.nextElementSibling.textContent = "Enter valid phone Number";
+    phoneInput.focus();
     console.log("phone");
   } else {
     console.log("history");
-    
+
     let id;
     if (historyArray.length > 0) {
       id = historyArray[historyArray.length - 1].id + 1;
@@ -410,7 +435,7 @@ const saveToHistory = () => {
     console.log(historyArray);
 
     nameInput.value = "";
-    phoneInput.value = "";  
+    phoneInput.value = "";
 
     //clear list
     list = [];

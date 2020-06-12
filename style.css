@@ -29,6 +29,9 @@ button:active {
 .justify-end {
   justify-content: flex-end;
 }
+.justify-center {
+  justify-content: center;
+}
 
 nav {
   background-color: teal;
@@ -136,7 +139,7 @@ nav {
 .expand-container {
   font-size: 30px;
   font-weight: bold;
-  cursor: pointer;
+  
   padding: 10px;
   transition: all 0.3s;
 }
@@ -147,6 +150,9 @@ nav {
 /* .details-container .active:after{
   transition:0.5s ease-in-out;
 } */
+.details-container{
+  cursor: pointer;
+}
 
 .details-container .active:after {
   content: "\2212";
@@ -208,8 +214,21 @@ input:active {
   padding: 10px 15px;
 }
 
-.error {
-  border: 2px solid red;
+.input-form label {
+  margin-right: 5px;
+}
+.input-form .error {
+  border: 2px solid #c0392b;
+}
+
+.input-form label.showerror {
+  display: block;
+  color: #c0392b;
+  font-size: 10px;
+}
+.input-form label.hideerror {
+  display: none;
+
 }
 button {
   width: 100%;
